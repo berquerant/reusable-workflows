@@ -7,7 +7,8 @@
 
 ## Design Conventions
 
-- **Least-privilege permissions**: Declare top-level `permissions: {}` and grant only the minimum required permissions per job.
+- **Least-privilege permissions**: Declare top-level `permissions: {}` and grant only the minimum required permissions per job, documenting the purpose of each permission with an inline YAML comment.
+- **Inline rationale comments**: Add inline YAML comments explaining notable non-default settings (e.g. `fetch-depth: 0`, `cache: false`).
 - **Checkout safety**: Set `persist-credentials: false` on `actions/checkout`.
 - **Timeouts**: Set explicit `timeout-minutes` on every job.
 - **Concurrency**: Managed at the caller workflow's top level.

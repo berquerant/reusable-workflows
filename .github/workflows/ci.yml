@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     permissions:
-      contents: read
+      contents: read # checkout repository for linting
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
@@ -32,5 +32,5 @@ jobs:
 
   actions-lock-verify:
     permissions:
-      contents: read
+      contents: read # checkout repository and verify actions.lock
     uses: ./.github/workflows/actions-lock-verify.yml # zizmor: ignore[self-repository]

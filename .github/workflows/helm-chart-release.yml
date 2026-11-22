@@ -24,13 +24,13 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
-      contents: write
-      packages: write
+      contents: write # create GitHub releases and update gh-pages via chart-releaser
+      packages: write # push OCI Helm chart packages to GHCR
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
         with:
-          fetch-depth: 0
+          fetch-depth: 0 # required by chart-releaser to inspect full git history and tags
           persist-credentials: false
       - name: Configure Git
         run: |

@@ -23,7 +23,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
-      contents: read
+      contents: read # checkout repository
     outputs:
       values: ${{ steps.set-matrix.outputs.values }}
     steps:
@@ -44,7 +44,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
-      contents: read
+      contents: read # checkout repository and generate manifests
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
@@ -71,7 +71,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
-      contents: read
+      contents: read # checkout repository to compare generated manifests against golden snapshots
     strategy:
       fail-fast: false
       matrix:
@@ -107,7 +107,7 @@ jobs:
     if: always()
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    permissions: {}
+    permissions: {} # only evaluates upstream job results; no token permissions needed
     steps:
       - name: Check results
         env:
