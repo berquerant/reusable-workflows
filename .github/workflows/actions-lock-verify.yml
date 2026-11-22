@@ -1,0 +1,34 @@
+name: actions-lock-verify
+
+permissions: {}
+
+on:
+  workflow_call:
+    inputs:
+      timeout-minutes:
+        description: Job timeout in minutes
+        type: number
+        default: 5
+      working-directory:
+        description: Working directory containing .github/workflows/actions.lock
+        type: string
+        default: "."
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Verify actions.lock
+        working-directory: ${{ inputs.working-directory }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh extension install github/gh-actions-lock
+          gh actions-lock --verify
