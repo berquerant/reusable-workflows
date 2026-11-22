@@ -14,3 +14,4 @@
 - **Supply-chain integrity**: All actions referenced inside this repository are locked via `.github/workflows/actions.lock` and verified in CI (`gh actions-lock --verify`).
 - **Linting**: Run `mise run lint` (`actionlint`, `ghalint`, `zizmor`) before committing workflow changes.
 - **Documentation**: Document each workflow in `docs/workflows/<name>.md` and add an entry to `docs/README.md`.
+- **Cross-repository edits**: When updating another repository to call workflows from this repository, create a git worktree under `.git-worktree/` inside this repository.
