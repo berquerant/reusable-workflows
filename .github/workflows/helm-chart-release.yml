@@ -1,0 +1,67 @@
+name: helm-chart-release
+
+permissions: {}
+
+on:
+  workflow_call:
+    inputs:
+      helm-version:
+        description: Helm version to install via azure/setup-helm
+        type: string
+        default: latest
+      oci-registry:
+        description: OCI registry URL (defaults to oci://ghcr.io/<owner>/<repo>/charts)
+        type: string
+        default: ""
+      timeout-minutes:
+        description: Job timeout in minutes
+        type: number
+        default: 10
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    permissions:
+      contents: write
+      packages: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Configure Git
+        run: |
+          git config user.name "$GITHUB_ACTOR"
+          git config user.email "$GITHUB_ACTOR@users.noreply.github.com"
+      - name: Set up Helm
+        uses: azure/setup-helm@v5.1.0
+        with:
+          version: ${{ inputs.helm-version }}
+      - name: Login to ghcr
+        uses: docker/login-action@v4.8.0
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Run chart-releaser
+        uses: helm/chart-releaser-action@v1.9.0
+        with:
+          skip_existing: true
+        env:
+          CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Push to ghcr
+        env:
+          OCI_REGISTRY: ${{ inputs.oci-registry }}
+          REPOSITORY: ${{ github.repository }}
+        run: |
+          remote_url="${OCI_REGISTRY:-oci://ghcr.io/${REPOSITORY}/charts}"
+          find .cr-release-packages -type f | while read -r package; do
+            name="$(helm show chart "$package" | yq .name)"
+            version="$(helm show chart "$package" | yq .version)"
+            if ! helm pull "${remote_url}/${name}:${version}"; then
+              helm push "$package" "$remote_url"
+            fi
+          done
