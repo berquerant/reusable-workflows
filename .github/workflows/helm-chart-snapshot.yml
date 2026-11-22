@@ -97,3 +97,25 @@ jobs:
           left: golden/${{ matrix.value }}
           right: generated/${{ matrix.value }}
           fail-on-diff: true
+
+  summary:
+    name: Snapshot
+    needs:
+      - generate-matrix
+      - generate-manifests
+      - test
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {}
+    steps:
+      - name: Check results
+        env:
+          GENERATE_MATRIX_RESULT: ${{ needs.generate-matrix.result }}
+          GENERATE_MANIFESTS_RESULT: ${{ needs.generate-manifests.result }}
+          TEST_RESULT: ${{ needs.test.result }}
+        run: |
+          if [ "$GENERATE_MATRIX_RESULT" != "success" ] || [ "$GENERATE_MANIFESTS_RESULT" != "success" ] || [ "$TEST_RESULT" != "success" ]; then
+            echo "Snapshot failed (generate-matrix=$GENERATE_MATRIX_RESULT, generate-manifests=$GENERATE_MANIFESTS_RESULT, test=$TEST_RESULT)" >&2
+            exit 1
+          fi

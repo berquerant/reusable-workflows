@@ -25,3 +25,7 @@ jobs:
 ## Permissions
 
 Requires `contents: read` on the caller job.
+
+## Required Status Checks
+
+This workflow includes a `summary` job named `Snapshot` that aggregates the results of `generate-matrix`, `generate-manifests`, and all matrix `test` jobs. Register `<caller-job-id> / Snapshot` (e.g. `snapshot / Snapshot`) in repository rulesets instead of listing individual matrix entries.
