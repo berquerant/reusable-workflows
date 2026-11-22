@@ -1,0 +1,22 @@
+[tools]
+actionlint = "1.7.12"
+ghalint = "1.6.0"
+zizmor = "1.32.0"
+
+[tasks.default]
+depends = ["lint"]
+
+[tasks.lint]
+depends = ["actionlint", "ghalint", "zizmor"]
+
+[tasks.actionlint]
+description = "Run actionlint on GitHub Actions workflows"
+run = "actionlint"
+
+[tasks.ghalint]
+description = "Run ghalint on GitHub Actions workflows"
+run = "ghalint run"
+
+[tasks.zizmor]
+description = "Run zizmor security audit on GitHub Actions workflows"
+run = "zizmor .github/workflows"
