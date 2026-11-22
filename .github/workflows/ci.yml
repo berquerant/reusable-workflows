@@ -1,0 +1,36 @@
+name: ci
+
+permissions: {}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          persist-credentials: false
+      - name: Setup mise
+        uses: jdx/mise-action@v5.2.10
+      - name: Lint
+        run: mise run lint
+
+  actions-lock-verify:
+    permissions:
+      contents: read
+    uses: ./.github/workflows/actions-lock-verify.yml # zizmor: ignore[self-repository]
