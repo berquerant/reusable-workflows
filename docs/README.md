@@ -11,6 +11,7 @@
 | [`go-ci.yml`](workflows/go-ci.md) | Runs Go `lint`, `test`, `build`, and `govulncheck` with `actions/setup-go` |
 | [`go-mise-ci.yml`](workflows/go-mise-ci.md) | Runs Go `lint`, `test`, `build`, and `govulncheck` with `jdx/mise-action` |
 | [`rust-ci.yml`](workflows/rust-ci.md) | Runs Rust `lint`, `test`, `build`, and `cargo audit` with `Swatinem/rust-cache` |
+| [`python-uv-ci.yml`](workflows/python-uv-ci.md) | Runs Python CI using `astral-sh/setup-uv`, `uv sync`, and configurable checks |
 
 ## Security Notes for Callers
 
