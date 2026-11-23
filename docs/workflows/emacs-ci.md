@@ -9,16 +9,18 @@ jobs:
   ci:
     permissions:
       contents: read # checkout repository for Emacs CI
-    uses: berquerant/reusable-workflows/.github/workflows/emacs-ci.yml@v0.9.0
+    uses: berquerant/reusable-workflows/.github/workflows/emacs-ci.yml@v0.9.1
     with:
-      emacs-versions: '["27.1", "30.1"]'
+      emacs-versions: |
+        27.1
+        30.1
 ```
 
 ## Inputs
 
 | Input | Type | Required | Default | Description |
 | :--- | :--- | :---: | :--- | :--- |
-| `emacs-versions` | `string` | no | `'["30.1"]'` | JSON array of Emacs versions to test |
+| `emacs-versions` | `string` | no | `"30.1"` | Newline-separated list of Emacs versions to test |
 | `byte-compile-error-on-warn` | `boolean` | no | `true` | Whether byte-compile warnings fail the build when `test-command` is empty |
 | `setup-command` | `string` | no | `""` | Optional shell command to run before byte-compile and tests |
 | `test-command` | `string` | no | `""` | Shell command to run tests (runs `batch-byte-compile` and `tests/*.el` ERT when empty) |

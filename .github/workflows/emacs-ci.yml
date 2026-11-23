@@ -6,9 +6,9 @@ on:
   workflow_call:
     inputs:
       emacs-versions:
-        description: JSON array of Emacs versions to test
+        description: Newline-separated list of Emacs versions to test
         type: string
-        default: '["30.1"]'
+        default: "30.1"
       byte-compile-error-on-warn:
         description: Whether byte-compile warnings fail the build when test-command is empty
         type: boolean
@@ -31,8 +31,29 @@ on:
         default: 5
 
 jobs:
+  prepare:
+    name: Prepare
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {} # only builds matrix JSON from inputs; no token permissions needed
+    outputs:
+      versions: ${{ steps.build-matrix.outputs.versions }}
+    steps:
+      - name: Build version matrix
+        id: build-matrix
+        env:
+          EMACS_VERSIONS: ${{ inputs.emacs-versions }}
+        run: |
+          versions="$(printf '%s\n' "$EMACS_VERSIONS" | jq -R -s -c 'split("\n") | map(gsub("^\\s+|\\s+$"; "")) | map(select(length > 0))')"
+          if [ "$versions" = "[]" ]; then
+            echo "emacs-versions must contain at least one version" >&2
+            exit 1
+          fi
+          echo "versions=${versions}" >> "$GITHUB_OUTPUT"
+
   ci:
     name: Emacs ${{ matrix.emacs-version }}
+    needs: prepare
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
@@ -40,10 +61,10 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        emacs-version: ${{ fromJson(inputs.emacs-versions) }}
+        emacs-version: ${{ fromJson(needs.prepare.outputs.versions) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           submodules: ${{ inputs.submodules }} # enable when package or tests depend on git submodules
           persist-credentials: false
@@ -80,6 +101,7 @@ jobs:
   summary:
     name: Emacs CI
     needs:
+      - prepare
       - ci
     if: always()
     runs-on: ubuntu-latest
@@ -88,9 +110,10 @@ jobs:
     steps:
       - name: Check results
         env:
+          PREPARE_RESULT: ${{ needs.prepare.result }}
           CI_RESULT: ${{ needs.ci.result }}
         run: |
-          if [ "$CI_RESULT" != "success" ]; then
-            echo "Emacs CI failed (ci=$CI_RESULT)" >&2
+          if [ "$PREPARE_RESULT" != "success" ] || [ "$CI_RESULT" != "success" ]; then
+            echo "Emacs CI failed (prepare=$PREPARE_RESULT, ci=$CI_RESULT)" >&2
             exit 1
           fi
