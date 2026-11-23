@@ -1,0 +1,38 @@
+name: Setup Rust
+description: Set up Rust toolchain via rustup and cache Cargo artifacts
+
+inputs:
+  toolchain:
+    description: Rust toolchain to install via rustup
+    required: false
+    default: stable
+  components:
+    description: Space-separated rustup components to install
+    required: false
+    default: "clippy rustfmt"
+  workspaces:
+    description: Workspaces path passed to Swatinem/rust-cache
+    required: false
+    default: "."
+
+runs:
+  using: composite
+  steps:
+    - name: Set up Rust
+      shell: bash
+      env:
+        TOOLCHAIN: ${{ inputs.toolchain }}
+        COMPONENTS: ${{ inputs.components }}
+      run: |
+        set -euo pipefail
+        rustup set profile minimal
+        rustup install "$TOOLCHAIN"
+        rustup default "$TOOLCHAIN"
+        if [ -n "$COMPONENTS" ]; then
+          # shellcheck disable=SC2086
+          rustup component add $COMPONENTS
+        fi
+    - name: Cache Cargo artifacts
+      uses: Swatinem/rust-cache@d1527c8f67ef9af357290475d4af4b0fab8f12e0 # v2.9.3
+      with:
+        workspaces: ${{ inputs.workspaces }}

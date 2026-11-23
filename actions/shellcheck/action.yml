@@ -1,0 +1,43 @@
+name: ShellCheck
+description: Run shellcheck with GitHub Actions problem matcher annotations
+
+inputs:
+  files:
+    description: Space-separated file paths to check (auto-discovers tracked *.sh files when empty)
+    required: false
+    default: ""
+  exclude:
+    description: Comma-separated ShellCheck error codes to exclude (e.g. SC2086)
+    required: false
+    default: ""
+
+runs:
+  using: composite
+  steps:
+    - name: Register ShellCheck problem matcher
+      shell: bash
+      env:
+        ACTION_PATH: ${{ github.action_path }}
+      run: echo "::add-matcher::${ACTION_PATH}/shellcheck-matcher.json"
+    - name: Run ShellCheck
+      shell: bash
+      env:
+        FILES: ${{ inputs.files }}
+        EXCLUDE: ${{ inputs.exclude }}
+      run: |
+        set -euo pipefail
+        args=(-f gcc)
+        if [ -n "$EXCLUDE" ]; then
+          args+=(-e "$EXCLUDE")
+        fi
+        if [ -n "$FILES" ]; then
+          # shellcheck disable=SC2086
+          shellcheck "${args[@]}" $FILES
+        else
+          mapfile -t targets < <(git ls-files '*.sh')
+          if [ "${#targets[@]}" -eq 0 ]; then
+            echo "No tracked *.sh files found."
+            exit 0
+          fi
+          shellcheck "${args[@]}" "${targets[@]}"
+        fi
