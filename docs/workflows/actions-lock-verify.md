@@ -18,6 +18,7 @@ jobs:
 | :--- | :--- | :--- | :--- |
 | `timeout-minutes` | `number` | `5` | Job timeout in minutes |
 | `working-directory` | `string` | `"."` | Working directory containing `.github/workflows/actions.lock` |
+| `extension-version` | `string` | `"v0.4.1"` | Pinned version tag of `github/gh-actions-lock` |
 
 ## Permissions
 

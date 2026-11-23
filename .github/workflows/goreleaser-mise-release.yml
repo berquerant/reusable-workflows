@@ -35,12 +35,12 @@ jobs:
       contents: write # create GitHub releases and upload release assets
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           fetch-depth: 0 # required by GoReleaser for changelog generation and tag resolution
           persist-credentials: false
       - name: Set up mise
-        uses: jdx/mise-action@v5.2.10
+        uses: jdx/mise-action@90f833d396d0cc3674b631d2d225e306476c303a # v5.2.10
         with:
           cache: false # disable cache for clean, reproducible release builds
       - name: Pre-release checks
@@ -61,7 +61,7 @@ jobs:
             echo "VERSION_PACKAGE=${INPUT_VERSION_PACKAGE}" >> "$GITHUB_ENV"
           fi
       - name: Run GoReleaser
-        uses: goreleaser/goreleaser-action@v7.3.0
+        uses: goreleaser/goreleaser-action@a4f02ab5355a589de60d917a659ce617ed19b3de # v7.3.0
         with:
           distribution: goreleaser
           version: ${{ inputs.goreleaser-version }}

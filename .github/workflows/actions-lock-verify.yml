@@ -13,22 +13,28 @@ on:
         description: Working directory containing .github/workflows/actions.lock
         type: string
         default: "."
+      extension-version:
+        description: Pinned version tag of github/gh-actions-lock
+        type: string
+        default: v0.4.1
 
 jobs:
   verify:
+    name: Verify actions.lock
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
       contents: read # checkout repository and read workflow/lockfile metadata via GitHub API
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
       - name: Verify actions.lock
         working-directory: ${{ inputs.working-directory }}
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          EXTENSION_VERSION: ${{ inputs.extension-version }}
         run: |
-          gh extension install github/gh-actions-lock
+          gh extension install github/gh-actions-lock --pin "$EXTENSION_VERSION"
           gh actions-lock --verify

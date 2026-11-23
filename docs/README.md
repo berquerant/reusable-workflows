@@ -10,3 +10,9 @@
 | [`goreleaser-mise-release.yml`](workflows/goreleaser-mise-release.md) | Builds and publishes GitHub Releases with GoReleaser v2 (`jdx/mise-action`) |
 | [`go-ci.yml`](workflows/go-ci.md) | Runs Go `lint`, `test`, `build`, and `govulncheck` with `actions/setup-go` |
 | [`go-mise-ci.yml`](workflows/go-mise-ci.md) | Runs Go `lint`, `test`, `build`, and `govulncheck` with `jdx/mise-action` |
+
+## Security Notes for Callers
+
+- **Pin references**: Pin workflow references to a specific release tag (e.g. `@v0.5.0`) or full commit SHA.
+- **Avoid `pull_request_target`**: Never call these workflows from `pull_request_target` or pass untrusted user inputs (such as `workflow_dispatch` inputs or PR titles/bodies) into `*-command` inputs.
+- **Restrict release triggers**: Only call `goreleaser-release.yml`, `goreleaser-mise-release.yml`, and `helm-chart-release.yml` from protected branch pushes (`main`) or release tag pushes (`v*`).
