@@ -16,3 +16,9 @@
 - **Linting**: Run `mise run lint` (`actionlint`, `ghalint`, `zizmor`) before committing workflow changes.
 - **Documentation**: Document each workflow in `docs/workflows/<name>.md` and add an entry to `docs/README.md`.
 - **Cross-repository edits**: When updating another repository to call workflows from this repository, create a git worktree under `.git-worktree/` inside this repository.
+
+## Documentation Version References
+
+- Usage examples in `docs/workflows/<name>.md` and `docs/actions/README.md` pin to the release tag in which that workflow/action was **last changed** (not necessarily the latest tag). Mismatched tags across docs are expected; do not bump unchanged ones.
+- When a workflow/action changes, update its doc example to the new tag after the release is tagged (follow-up commit).
+- `docs/README.md` uses `@v0.5.0` only as an illustrative example of pinning; it need not track releases.
