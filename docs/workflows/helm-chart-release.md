@@ -17,7 +17,7 @@ jobs:
 
 | Input | Type | Required | Default | Description |
 | :--- | :--- | :---: | :--- | :--- |
-| `helm-version` | `string` | no | `latest` | Helm version to install via `azure/setup-helm` |
+| `helm-version` | `string` | no | `latest` | Helm version to install via `azure/setup-helm` (unpinned by default; pin for reproducibility) |
 | `oci-registry` | `string` | no | `""` | OCI registry URL (defaults to `oci://ghcr.io/<owner>/<repo>/charts`) |
 | `timeout-minutes` | `number` | no | `10` | Job timeout in minutes |
 

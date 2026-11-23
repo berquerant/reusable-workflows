@@ -19,7 +19,7 @@ jobs:
 | Input | Type | Required | Default | Description |
 | :--- | :--- | :---: | :--- | :--- |
 | `chart-dir` | `string` | yes | — | Path to the Helm chart directory (e.g. `charts/my-chart`) |
-| `helm-version` | `string` | no | `latest` | Helm version to install via `azure/setup-helm` |
+| `helm-version` | `string` | no | `latest` | Helm version to install via `azure/setup-helm` (unpinned by default; pin for reproducibility) |
 | `timeout-minutes` | `number` | no | `10` | Job timeout in minutes |
 
 ## Permissions

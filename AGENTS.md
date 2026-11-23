@@ -28,3 +28,9 @@
 - Reusable workflows in this repository do **not** call the composite actions under `actions/`. Inside a reusable workflow, a local reference (`uses: ./actions/...`) resolves against the **caller's** workspace, not this repository. An external reference (`berquerant/reusable-workflows/actions/...@<tag>`) would require the tag to exist before the workflow that uses it is released.
 - Setup steps (Go, Rust, etc.) are therefore implemented inline in each workflow. Duplication between workflows (e.g. `prepare` matrix generation, `summary` result checks) is accepted for this reason; when changing one, check its siblings.
 - Composite actions are provided for callers to use directly. Keep their `uses:` references pinned to a commit SHA with a version comment.
+
+## Tool Version Policy
+
+- Defaults that track upstream (`helm-version: latest`, `goreleaser-version: ~> v2`) are intentional: callers get fixes without a release here. Callers that need reproducibility must pin these inputs explicitly.
+- `rust-ci.yml` caches `cargo-audit` under the key `<os>-cargo-audit-v1`. The cached binary is not refreshed automatically; bump the `vN` suffix to force a reinstall (e.g. when RustSec requires a newer `cargo-audit`).
+- Document any such unpinned default in the workflow's doc page.

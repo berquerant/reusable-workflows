@@ -23,7 +23,7 @@ jobs:
 | :--- | :--- | :---: | :--- | :--- |
 | `pre-release-command` | `string` | no | `""` | Optional shell command to run before GoReleaser |
 | `version-package` | `string` | no | `""` | Optional `VERSION_PACKAGE` environment variable for GoReleaser |
-| `goreleaser-version` | `string` | no | `~> v2` | GoReleaser version constraint |
+| `goreleaser-version` | `string` | no | `~> v2` | GoReleaser version constraint (tracks latest v2 by default; pin for reproducibility) |
 | `goreleaser-args` | `string` | no | `release --clean` | Arguments passed to GoReleaser |
 | `timeout-minutes` | `number` | no | `15` | Job timeout in minutes |
 

@@ -27,7 +27,7 @@ jobs:
 | `lint-command` | `string` | no | `""` | Shell command for linting (skipped when empty) |
 | `test-command` | `string` | no | `make test` | Shell command for testing (skipped when empty) |
 | `build-command` | `string` | no | `""` | Shell command for building (skipped when empty) |
-| `run-audit` | `boolean` | no | `true` | Whether to run `cargo audit` |
+| `run-audit` | `boolean` | no | `true` | Whether to run `cargo audit` (the `cargo-audit` binary is cached and refreshed only when this workflow's cache key is bumped) |
 | `timeout-minutes` | `number` | no | `20` | Job timeout in minutes |
 
 ## Security
