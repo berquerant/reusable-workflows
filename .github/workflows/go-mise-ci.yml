@@ -94,7 +94,7 @@ jobs:
           submodules: ${{ inputs.submodules }} # enable when tests or codegen depend on git submodules
           persist-credentials: false
       - name: Set up mise
-        uses: jdx/mise-action@90f833d396d0cc3674b631d2d225e306476c303a # v5.2.10
+        uses: jdx/mise-action@v5.2.10
       - name: Run ${{ matrix.task.name }}
         working-directory: ${{ inputs.working-directory }}
         env:
@@ -115,7 +115,7 @@ jobs:
           submodules: ${{ inputs.submodules }} # enable when module layout depends on git submodules
           persist-credentials: false
       - name: Run govulncheck
-        uses: berquerant/govulncheck-action@5510ec82503dd285d97cb3e48e9c5f5c2f5c6773 # v1.0.4
+        uses: berquerant/govulncheck-action@v1.0.4
         with:
           checkout: false # already checked out above with persist-credentials and submodules settings
           go-version-file: ${{ inputs.go-version-file }}
