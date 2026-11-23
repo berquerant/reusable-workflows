@@ -20,7 +20,6 @@ on:
 
 jobs:
   verify:
-    name: Verify actions.lock
     runs-on: ubuntu-latest
     timeout-minutes: ${{ inputs.timeout-minutes }}
     permissions:
