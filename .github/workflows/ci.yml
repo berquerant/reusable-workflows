@@ -32,7 +32,6 @@ jobs:
         run: mise run lint
 
   actions-lock-verify:
-    name: Verify actions.lock
     permissions:
       contents: read # checkout repository and verify actions.lock
     uses: ./.github/workflows/actions-lock-verify.yml # zizmor: ignore[self-repository]
