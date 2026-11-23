@@ -1,6 +1,6 @@
 # `rust-ci.yml`
 
-Runs standard Rust CI jobs (`lint`, `test`, `build`, and `cargo audit`) in parallel using `rustup`, `Swatinem/rust-cache`, and `rustsec/audit-check`, plus an aggregated `Rust CI` summary job for repository rulesets.
+Runs standard Rust CI jobs (`lint`, `test`, `build`, and `cargo audit`) in parallel using `rustup`, `Swatinem/rust-cache`, and `actions/cache` (for `cargo-audit`), plus an aggregated `Rust CI` summary job for repository rulesets.
 
 ## Usage
 
@@ -9,7 +9,7 @@ jobs:
   ci:
     permissions:
       contents: read # checkout repository for Rust CI
-    uses: berquerant/reusable-workflows/.github/workflows/rust-ci.yml@v0.7.0
+    uses: berquerant/reusable-workflows/.github/workflows/rust-ci.yml@v0.7.1
     with:
       lint-command: make lint
       test-command: make test
@@ -27,8 +27,7 @@ jobs:
 | `lint-command` | `string` | no | `""` | Shell command for linting (skipped when empty) |
 | `test-command` | `string` | no | `make test` | Shell command for testing (skipped when empty) |
 | `build-command` | `string` | no | `""` | Shell command for building (skipped when empty) |
-| `run-audit` | `boolean` | no | `true` | Whether to run `rustsec/audit-check` |
-| `audit-ignore` | `string` | no | `""` | Comma-separated advisory IDs to ignore in `rustsec/audit-check` |
+| `run-audit` | `boolean` | no | `true` | Whether to run `cargo audit` |
 | `timeout-minutes` | `number` | no | `20` | Job timeout in minutes |
 
 ## Permissions

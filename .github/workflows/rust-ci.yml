@@ -34,13 +34,9 @@ on:
         type: string
         default: ""
       run-audit:
-        description: Whether to run rustsec/audit-check
+        description: Whether to run cargo audit
         type: boolean
         default: true
-      audit-ignore:
-        description: Comma-separated advisory IDs to ignore in rustsec/audit-check
-        type: string
-        default: ""
       timeout-minutes:
         description: Job timeout in minutes
         type: number
@@ -133,12 +129,26 @@ jobs:
         with:
           submodules: ${{ inputs.submodules }} # enable when workspace depends on git submodules
           persist-credentials: false
-      - name: Run cargo audit
-        uses: rustsec/audit-check@v2.0.0
+      - name: Set up Rust
+        env:
+          TOOLCHAIN: ${{ inputs.toolchain }}
+        run: |
+          set -euo pipefail
+          rustup set profile minimal
+          rustup install "$TOOLCHAIN"
+          rustup default "$TOOLCHAIN"
+      - name: Cache cargo-audit
+        id: cache-audit
+        uses: actions/cache@v6.1.0
         with:
-          token: ${{ github.token }}
-          ignore: ${{ inputs.audit-ignore }}
-          working-directory: ${{ inputs.working-directory }}
+          path: ~/.cargo/bin/cargo-audit
+          key: ${{ runner.os }}-cargo-audit-v1
+      - name: Install cargo-audit
+        if: steps.cache-audit.outputs.cache-hit != 'true'
+        run: cargo install --locked cargo-audit
+      - name: Run cargo audit
+        working-directory: ${{ inputs.working-directory }}
+        run: cargo audit
 
   summary:
     name: Rust CI
