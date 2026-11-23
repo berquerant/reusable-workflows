@@ -33,6 +33,10 @@ jobs:
 - `VERSION`: Exact Git tag at `HEAD` when present (`git describe --tags --abbrev=0 --exact-match`)
 - `VERSION_PACKAGE`: Set when `inputs.version-package` is non-empty
 
+## Security
+
+`pre-release-command` is executed as a shell command in a job holding `contents: write`. Pass only trusted, static values, and call this workflow only from protected branches or release tags.
+
 ## Permissions
 
 Requires `contents: write` on the caller job.

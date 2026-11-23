@@ -22,6 +22,16 @@ jobs:
 | `generate-script` | `string` | no | `./tests/generate.sh` | Path to the manifest generation script |
 | `timeout-minutes` | `number` | no | `5` | Job timeout in minutes |
 
+## Repository Layout
+
+The caller repository is expected to provide:
+
+- `<generate-script> ls <chart-name>`: prints the values files under `tests/<chart-name>/values/`.
+- `<generate-script> gen <chart-name> generated`: writes manifests to `tests/<chart-name>/generated/<value>`.
+- `tests/<chart-name>/golden/<value>`: golden snapshots to compare against.
+
+`generate-script` is executed as-is; pass only a trusted path.
+
 ## Permissions
 
 Requires `contents: read` on the caller job.

@@ -26,6 +26,10 @@ jobs:
 | `submodules` | `boolean` | no | `false` | Whether to checkout git submodules |
 | `timeout-minutes` | `number` | no | `20` | Job timeout in minutes |
 
+## Security
+
+`sync-command` and `command` are executed as shell commands on the runner. Pass only trusted, static values; never pass untrusted input (PR titles/bodies, `workflow_dispatch` inputs).
+
 ## Permissions
 
 Requires `contents: read` on the caller job.

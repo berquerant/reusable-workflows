@@ -32,6 +32,10 @@ jobs:
 | `run-govulncheck` | `boolean` | no | `true` | Whether to run `berquerant/govulncheck-action` |
 | `timeout-minutes` | `number` | no | `10` | Job timeout in minutes |
 
+## Security
+
+`lint-command`, `test-command` and `build-command` are executed as shell commands on the runner. Pass only trusted, static values; never pass untrusted input (PR titles/bodies, `workflow_dispatch` inputs).
+
 ## Permissions
 
 Requires `contents: read` on the caller job.

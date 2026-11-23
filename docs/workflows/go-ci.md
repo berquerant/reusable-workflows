@@ -32,6 +32,14 @@ jobs:
 | `run-govulncheck` | `boolean` | no | `true` | Whether to run `berquerant/govulncheck-action` |
 | `timeout-minutes` | `number` | no | `10` | Job timeout in minutes |
 
+## Security
+
+`lint-command`, `test-command` and `build-command` are executed as shell commands on the runner. Pass only trusted, static values; never pass untrusted input (PR titles/bodies, `workflow_dispatch` inputs).
+
+## Notes
+
+- `working-directory` applies to `go mod download` and the commands only. `go-version-file` and `cache-dependency-path` are relative to the **repository root**, so set them explicitly (e.g. `sub/go.mod`, `sub/go.sum`) when the module is in a subdirectory.
+
 ## Permissions
 
 Requires `contents: read` on the caller job.
