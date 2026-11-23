@@ -89,7 +89,7 @@ jobs:
         task: ${{ fromJson(needs.prepare.outputs.tasks) }}
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           submodules: ${{ inputs.submodules }} # enable when tests or codegen depend on git submodules
           persist-credentials: false
@@ -117,7 +117,7 @@ jobs:
       contents: read # checkout repository for vulnerability scanning
     steps:
       - name: Checkout
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        uses: actions/checkout@v7.0.1
         with:
           submodules: ${{ inputs.submodules }} # enable when module layout depends on git submodules
           persist-credentials: false
