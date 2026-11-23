@@ -5,10 +5,6 @@ permissions: {}
 on:
   workflow_call:
     inputs:
-      setup-mode:
-        description: Toolchain setup mode ("go" or "mise")
-        type: string
-        default: go
       working-directory:
         description: Working directory containing the Go module
         type: string
@@ -51,19 +47,11 @@ jobs:
     name: Prepare
     runs-on: ubuntu-latest
     timeout-minutes: 5
-    permissions: {} # only validates inputs and builds matrix JSON; no token permissions needed
+    permissions: {} # only builds matrix JSON from inputs; no token permissions needed
     outputs:
       tasks: ${{ steps.build-matrix.outputs.tasks }}
       has-tasks: ${{ steps.build-matrix.outputs.has-tasks }}
     steps:
-      - name: Validate setup-mode
-        env:
-          SETUP_MODE: ${{ inputs.setup-mode }}
-        run: |
-          if [ "$SETUP_MODE" != "go" ] && [ "$SETUP_MODE" != "mise" ]; then
-            echo "Invalid setup-mode: $SETUP_MODE (expected 'go' or 'mise')" >&2
-            exit 1
-          fi
       - name: Build task matrix
         id: build-matrix
         env:
@@ -106,19 +94,14 @@ jobs:
           submodules: ${{ inputs.submodules }} # enable when tests or codegen depend on git submodules
           persist-credentials: false
       - name: Set up Go
-        if: inputs.setup-mode == 'go'
         uses: actions/setup-go@v7.1.0
         with:
           go-version-file: ${{ inputs.go-version-file }}
           cache-dependency-path: ${{ inputs.cache-dependency-path }}
           check-latest: true # use the latest patch release matching go.mod
       - name: Download Go modules
-        if: inputs.setup-mode == 'go'
         working-directory: ${{ inputs.working-directory }}
         run: go mod download
-      - name: Set up mise
-        if: inputs.setup-mode == 'mise'
-        uses: jdx/mise-action@v5.2.10
       - name: Run ${{ matrix.task.name }}
         working-directory: ${{ inputs.working-directory }}
         env:

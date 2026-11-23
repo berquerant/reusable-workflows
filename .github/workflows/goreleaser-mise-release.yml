@@ -1,0 +1,70 @@
+name: goreleaser-mise-release
+
+permissions: {}
+
+on:
+  workflow_call:
+    inputs:
+      pre-release-command:
+        description: Optional shell command to run before GoReleaser
+        type: string
+        default: ""
+      version-package:
+        description: Optional VERSION_PACKAGE environment variable for GoReleaser
+        type: string
+        default: ""
+      goreleaser-version:
+        description: GoReleaser version constraint
+        type: string
+        default: "~> v2"
+      goreleaser-args:
+        description: Arguments passed to GoReleaser
+        type: string
+        default: release --clean
+      timeout-minutes:
+        description: Job timeout in minutes
+        type: number
+        default: 15
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    permissions:
+      contents: write # create GitHub releases and upload release assets
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0 # required by GoReleaser for changelog generation and tag resolution
+          persist-credentials: false
+      - name: Set up mise
+        uses: jdx/mise-action@v5.2.10
+        with:
+          cache: false # disable cache for clean, reproducible release builds
+      - name: Pre-release checks
+        if: inputs.pre-release-command != ''
+        env:
+          PRE_RELEASE_COMMAND: ${{ inputs.pre-release-command }}
+        run: bash -euo pipefail -c "$PRE_RELEASE_COMMAND"
+      - name: Set release environment variables
+        env:
+          INPUT_VERSION_PACKAGE: ${{ inputs.version-package }}
+        run: |
+          echo "REVISION=$(git rev-parse --short HEAD)" >> "$GITHUB_ENV"
+          version="$(git describe --tags --abbrev=0 --exact-match 2>/dev/null || true)"
+          if [ -n "$version" ]; then
+            echo "VERSION=${version}" >> "$GITHUB_ENV"
+          fi
+          if [ -n "$INPUT_VERSION_PACKAGE" ]; then
+            echo "VERSION_PACKAGE=${INPUT_VERSION_PACKAGE}" >> "$GITHUB_ENV"
+          fi
+      - name: Run GoReleaser
+        uses: goreleaser/goreleaser-action@v7.3.0
+        with:
+          distribution: goreleaser
+          version: ${{ inputs.goreleaser-version }}
+          args: ${{ inputs.goreleaser-args }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

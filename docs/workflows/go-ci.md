@@ -1,6 +1,8 @@
 # `go-ci.yml`
 
-Runs standard Go CI jobs (`lint`, `test`, `build`, and `govulncheck`) in parallel with Go or `mise` toolchain setup, plus an aggregated `Go CI` summary job for repository rulesets.
+Runs standard Go CI jobs (`lint`, `test`, `build`, and `govulncheck`) in parallel using `actions/setup-go`, plus an aggregated `Go CI` summary job for repository rulesets.
+
+For repositories using `mise` (`jdx/mise-action`), use [`go-mise-ci.yml`](go-mise-ci.md).
 
 ## Usage
 
@@ -9,7 +11,7 @@ jobs:
   ci:
     permissions:
       contents: read # checkout repository for Go CI
-    uses: berquerant/reusable-workflows/.github/workflows/go-ci.yml@v0.4.0
+    uses: berquerant/reusable-workflows/.github/workflows/go-ci.yml@v0.5.0
     with:
       lint-command: make lint
       test-command: make test
@@ -20,7 +22,6 @@ jobs:
 
 | Input | Type | Required | Default | Description |
 | :--- | :--- | :---: | :--- | :--- |
-| `setup-mode` | `string` | no | `go` | Toolchain setup mode (`go` or `mise`) |
 | `working-directory` | `string` | no | `.` | Working directory containing the Go module |
 | `go-version-file` | `string` | no | `go.mod` | Path to `go.mod` relative to repository root |
 | `cache-dependency-path` | `string` | no | `go.sum` | Path to `go.sum` relative to repository root |

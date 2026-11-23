@@ -1,6 +1,8 @@
 # `goreleaser-release.yml`
 
-Runs GoReleaser v2 to build and publish GitHub Releases, with optional Go or `mise` setup and pre-release checks.
+Runs GoReleaser v2 to build and publish GitHub Releases using `actions/setup-go` and optional pre-release checks.
+
+For repositories using `mise` (`jdx/mise-action`), use [`goreleaser-mise-release.yml`](goreleaser-mise-release.md).
 
 ## Usage
 
@@ -8,11 +10,10 @@ Runs GoReleaser v2 to build and publish GitHub Releases, with optional Go or `mi
 jobs:
   release:
     permissions:
-      contents: write
-    uses: berquerant/reusable-workflows/.github/workflows/goreleaser-release.yml@v0.3.0
+      contents: write # create GitHub releases and upload release assets
+    uses: berquerant/reusable-workflows/.github/workflows/goreleaser-release.yml@v0.5.0
     with:
-      setup-mode: mise
-      pre-release-command: mise run
+      pre-release-command: make lint && make test
       version-package: github.com/berquerant/example/version
 ```
 
@@ -20,8 +21,7 @@ jobs:
 
 | Input | Type | Required | Default | Description |
 | :--- | :--- | :---: | :--- | :--- |
-| `setup-mode` | `string` | no | `go` | Toolchain setup mode (`go` or `mise`) |
-| `go-version-file` | `string` | no | `go.mod` | Path to `go.mod` when `setup-mode` is `go` |
+| `go-version-file` | `string` | no | `go.mod` | Path to `go.mod` |
 | `pre-release-command` | `string` | no | `""` | Optional shell command to run before GoReleaser |
 | `version-package` | `string` | no | `""` | Optional `VERSION_PACKAGE` environment variable for GoReleaser |
 | `goreleaser-version` | `string` | no | `~> v2` | GoReleaser version constraint |

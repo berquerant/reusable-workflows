@@ -12,12 +12,18 @@ workflows:
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-go@v7.1.0'
         - 'berquerant/govulncheck-action@v1.0.4'
+    '.github/workflows/go-mise-ci.yml':
+        - 'actions/checkout@v7.0.1'
+        - 'berquerant/govulncheck-action@v1.0.4'
+        - 'jdx/mise-action@v5.2.10'
+    '.github/workflows/goreleaser-mise-release.yml':
+        - 'actions/checkout@v7.0.1'
+        - 'goreleaser/goreleaser-action@v7.3.0'
         - 'jdx/mise-action@v5.2.10'
     '.github/workflows/goreleaser-release.yml':
         - 'actions/checkout@v7.0.1'
         - 'actions/setup-go@v7.1.0'
         - 'goreleaser/goreleaser-action@v7.3.0'
-        - 'jdx/mise-action@v5.2.10'
     '.github/workflows/helm-chart-ci.yml':
         - 'actions/checkout@v7.0.1'
         - 'azure/setup-helm@v5.1.0'
