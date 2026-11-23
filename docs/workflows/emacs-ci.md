@@ -9,7 +9,7 @@ jobs:
   ci:
     permissions:
       contents: read # checkout repository for Emacs CI
-    uses: berquerant/reusable-workflows/.github/workflows/emacs-ci.yml@v0.9.1
+    uses: berquerant/reusable-workflows/.github/workflows/emacs-ci.yml@v0.9.2
     with:
       emacs-versions: |
         27.1
