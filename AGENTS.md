@@ -34,3 +34,10 @@
 - Defaults that track upstream (`helm-version: latest`, `goreleaser-version: ~> v2`) are intentional: callers get fixes without a release here. Callers that need reproducibility must pin these inputs explicitly.
 - `rust-ci.yml` caches `cargo-audit` under the key `<os>-cargo-audit-v1`. The cached binary is not refreshed automatically; bump the `vN` suffix to force a reinstall (e.g. when RustSec requires a newer `cargo-audit`).
 - Document any such unpinned default in the workflow's doc page.
+
+## Smoke Tests
+
+- `.github/workflows/smoke-test.yml` calls the reusable workflows against minimal fixtures under `tests/fixtures/` to catch runtime errors (input wiring, matrix generation, summary logic) that linters cannot.
+- When adding or changing a CI-type reusable workflow, add or update the matching job in `smoke-test.yml` and, if needed, a fixture. Fixtures must be self-contained (commit lockfiles such as `Cargo.lock` and `uv.lock`).
+- Not covered: `helm-chart-*` (need a `kind` cluster), release workflows (side effects), `emacs-ci` (no `working-directory` input; it expects files at the repository root), and `go-mise-ci`.
+- After adding or removing a workflow file, run `gh actions-lock` and commit `.github/workflows/actions.lock`; otherwise `actions-lock-verify` fails.

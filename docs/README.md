@@ -14,6 +14,10 @@
 | [`python-uv-ci.yml`](workflows/python-uv-ci.md) | Runs Python CI using `astral-sh/setup-uv`, `uv sync`, and configurable checks |
 | [`emacs-ci.yml`](workflows/emacs-ci.md) | Runs Emacs Lisp CI (`batch-byte-compile`, ERT, or custom test command) across Emacs versions |
 
+## Smoke Tests
+
+This repository verifies the Go, Rust, and Python CI workflows against fixtures under `tests/fixtures/` (see `.github/workflows/smoke-test.yml`). Fixtures are not meant for callers to use.
+
 ## Composite Actions
 
 See [Composite Actions](actions/README.md) for `setup-go`, `setup-rust`, `shellcheck`, and `setup-buildx`.
