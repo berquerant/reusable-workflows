@@ -1,0 +1,61 @@
+name: smoke-test
+
+# Calls the reusable workflows against minimal fixtures under tests/fixtures
+# to catch runtime errors (input wiring, matrix generation, summary logic) that linters cannot.
+
+permissions: {}
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  go-ci:
+    permissions:
+      contents: read # checkout repository for Go CI smoke test
+    uses: ./.github/workflows/go-ci.yml # zizmor: ignore[self-repository]
+    with:
+      working-directory: tests/fixtures/go
+      go-version-file: tests/fixtures/go/go.mod
+      cache-dependency-path: tests/fixtures/go/go.mod # fixture has no go.sum
+      lint-command: go vet ./...
+      test-command: go test ./...
+      build-command: go build ./...
+
+  go-ci-no-tasks:
+    permissions:
+      contents: read # checkout repository for Go CI smoke test (all tasks skipped)
+    uses: ./.github/workflows/go-ci.yml # zizmor: ignore[self-repository]
+    with:
+      working-directory: tests/fixtures/go
+      go-version-file: tests/fixtures/go/go.mod
+      cache-dependency-path: tests/fixtures/go/go.mod # fixture has no go.sum
+      test-command: "" # skip every task to exercise the has-tasks=false path
+      run-govulncheck: false
+
+  rust-ci:
+    permissions:
+      contents: read # checkout repository for Rust CI smoke test
+    uses: ./.github/workflows/rust-ci.yml # zizmor: ignore[self-repository]
+    with:
+      working-directory: tests/fixtures/rust
+      lint-command: cargo clippy --all-targets -- -D warnings
+      test-command: cargo test
+      build-command: cargo build
+
+  python-uv-ci:
+    permissions:
+      contents: read # checkout repository for Python uv CI smoke test
+    uses: ./.github/workflows/python-uv-ci.yml # zizmor: ignore[self-repository]
+    with:
+      working-directory: tests/fixtures/python
+      python-version: "3.15" # fixture requires >3.15
+      command: uv run python -c "print('ok')"
