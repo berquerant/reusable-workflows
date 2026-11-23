@@ -1,0 +1,96 @@
+name: emacs-ci
+
+permissions: {}
+
+on:
+  workflow_call:
+    inputs:
+      emacs-versions:
+        description: JSON array of Emacs versions to test
+        type: string
+        default: '["30.1"]'
+      byte-compile-error-on-warn:
+        description: Whether byte-compile warnings fail the build when test-command is empty
+        type: boolean
+        default: true
+      setup-command:
+        description: Optional shell command to run before byte-compile and tests
+        type: string
+        default: ""
+      test-command:
+        description: Shell command to run tests (runs batch-byte-compile and ERT when empty)
+        type: string
+        default: ""
+      submodules:
+        description: Whether to checkout git submodules
+        type: boolean
+        default: false
+      timeout-minutes:
+        description: Job timeout in minutes
+        type: number
+        default: 5
+
+jobs:
+  ci:
+    name: Emacs ${{ matrix.emacs-version }}
+    runs-on: ubuntu-latest
+    timeout-minutes: ${{ inputs.timeout-minutes }}
+    permissions:
+      contents: read # checkout repository for Emacs CI
+    strategy:
+      fail-fast: false
+      matrix:
+        emacs-version: ${{ fromJson(inputs.emacs-versions) }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+        with:
+          submodules: ${{ inputs.submodules }} # enable when package or tests depend on git submodules
+          persist-credentials: false
+      - name: Set up Emacs
+        uses: purcell/setup-emacs@v8.0
+        with:
+          version: ${{ matrix.emacs-version }}
+      - name: Run setup command
+        if: inputs.setup-command != ''
+        env:
+          SETUP_COMMAND: ${{ inputs.setup-command }}
+        run: bash -euo pipefail -c "$SETUP_COMMAND"
+      - name: Byte-compile
+        if: inputs.test-command == ''
+        env:
+          ERROR_ON_WARN: ${{ inputs.byte-compile-error-on-warn }}
+        run: |
+          if [ "$ERROR_ON_WARN" = "true" ]; then
+            err="t"
+          else
+            err="nil"
+          fi
+          emacs --batch --quick --directory . --eval "(progn (setq byte-compile-error-on-warn ${err}) (batch-byte-compile))" ./*.el
+      - name: Run tests
+        env:
+          TEST_COMMAND: ${{ inputs.test-command }}
+        run: |
+          if [ -n "$TEST_COMMAND" ]; then
+            bash -euo pipefail -c "$TEST_COMMAND"
+          elif compgen -G "tests/*.el" > /dev/null; then
+            emacs --batch --quick --directory . --load tests/*.el --eval "(ert-run-tests-batch-and-exit t)"
+          fi
+
+  summary:
+    name: Emacs CI
+    needs:
+      - ci
+    if: always()
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions: {} # only evaluates upstream job results; no token permissions needed
+    steps:
+      - name: Check results
+        env:
+          CI_RESULT: ${{ needs.ci.result }}
+        run: |
+          if [ "$CI_RESULT" != "success" ]; then
+            echo "Emacs CI failed (ci=$CI_RESULT)" >&2
+            exit 1
+          fi

@@ -12,6 +12,7 @@
 | [`go-mise-ci.yml`](workflows/go-mise-ci.md) | Runs Go `lint`, `test`, `build`, and `govulncheck` with `jdx/mise-action` |
 | [`rust-ci.yml`](workflows/rust-ci.md) | Runs Rust `lint`, `test`, `build`, and `cargo audit` with `Swatinem/rust-cache` |
 | [`python-uv-ci.yml`](workflows/python-uv-ci.md) | Runs Python CI using `astral-sh/setup-uv`, `uv sync`, and configurable checks |
+| [`emacs-ci.yml`](workflows/emacs-ci.md) | Runs Emacs Lisp CI (`batch-byte-compile`, ERT, or custom test command) across Emacs versions |
 
 ## Security Notes for Callers
 
