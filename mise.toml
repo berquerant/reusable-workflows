@@ -19,4 +19,4 @@ run = "ghalint run"
 
 [tasks.zizmor]
 description = "Run zizmor security audit on GitHub Actions workflows"
-run = "zizmor .github/workflows"
+run = "zizmor .github/workflows actions"
