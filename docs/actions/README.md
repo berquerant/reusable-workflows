@@ -1,13 +1,13 @@
 # Composite Actions
 
-Callers should pin action references to a release tag (e.g. `@v0.10.0`) or full commit SHA.
+Callers should pin action references to a release tag (e.g. `@v0.10.1`) or full commit SHA.
 
 ## `actions/setup-go`
 
 Sets up Go with `actions/setup-go` and runs `go mod download`.
 
 ```yaml
-- uses: berquerant/reusable-workflows/actions/setup-go@v0.10.0
+- uses: berquerant/reusable-workflows/actions/setup-go@v0.10.1
 ```
 
 | Input | Required | Default | Description |
@@ -44,10 +44,14 @@ Registers `shellcheck-matcher.json` and runs `shellcheck -f gcc` on tracked `*.s
 | `files` | no | `""` | Space-separated file paths to check (auto-discovers tracked `*.sh` files when empty) |
 | `exclude` | no | `""` | Comma-separated ShellCheck error codes to exclude |
 
-## `actions/setup-buildx-mirror`
+## `actions/setup-buildx`
 
-Sets up Docker Buildx configured with `mirror.gcr.io` as a mirror for `docker.io`.
+Sets up Docker Buildx with configurable `buildkitd-config-inline` (defaults to `mirror.gcr.io` mirror for `docker.io`).
 
 ```yaml
-- uses: berquerant/reusable-workflows/actions/setup-buildx-mirror@v0.10.0
+- uses: berquerant/reusable-workflows/actions/setup-buildx@v0.10.1
 ```
+
+| Input | Required | Default | Description |
+| :--- | :---: | :--- | :--- |
+| `buildkitd-config-inline` | no | `[registry."docker.io"]\n  mirrors = ["mirror.gcr.io"]` | Inline BuildKit daemon configuration |

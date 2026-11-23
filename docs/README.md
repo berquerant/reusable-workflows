@@ -16,7 +16,7 @@
 
 ## Composite Actions
 
-See [Composite Actions](actions/README.md) for `setup-go`, `setup-rust`, `shellcheck`, and `setup-buildx-mirror`.
+See [Composite Actions](actions/README.md) for `setup-go`, `setup-rust`, `shellcheck`, and `setup-buildx`.
 
 ## Security Notes for Callers
 
