@@ -1,7 +1,7 @@
 [tools]
 actionlint = "1.7.12"
 ghalint = "1.6.0"
-zizmor = "1.32.0"
+zizmor = "1.33.1"
 
 [tasks.default]
 depends = ["lint"]
