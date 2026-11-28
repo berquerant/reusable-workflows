@@ -94,7 +94,7 @@ jobs:
           submodules: ${{ inputs.submodules }} # enable when tests or codegen depend on git submodules
           persist-credentials: false
       - name: Set up mise
-        uses: jdx/mise-action@v5.2.10
+        uses: jdx/mise-action@v5.3.0
       - name: Run ${{ matrix.task.name }}
         working-directory: ${{ inputs.working-directory }}
         env:
